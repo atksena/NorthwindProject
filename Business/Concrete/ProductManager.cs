@@ -20,6 +20,8 @@ namespace Business.Concrete
             _productDal = productDal;
         }
 
+        public List<Product> Data { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         public IResult Add(Product product)
         {
             if (product.ProductName.Length<2)
@@ -34,13 +36,13 @@ namespace Business.Concrete
         public IDataResult<List<Product>> GetAll()
         {
             //İş kodları
-            if (DateTime.Now.Hour==14)
+            if (DateTime.Now.Hour == 1)
             {
                 return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
             }
             return  new SuccessDataResult<List<Product>>(_productDal.GetAll(),Messages.ProductsListed);
         }
-
+         
         public IDataResult<List<Product>> GetAllByCategoryId(int id)
         {
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.CategoryId == id));
