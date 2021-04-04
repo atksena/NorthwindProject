@@ -1,10 +1,14 @@
-﻿using Business.Abstract;
+﻿ using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
+using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.InMemory;
 using Entities.Concrete;
 using Entities.DTOs;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,13 +26,30 @@ namespace Business.Concrete
 
         public List<Product> Data { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
+        //Aşağıdaki kod Add metodunu doğrula ProductValidator daki kurallara göre
+        [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {
-            if (product.ProductName.Length<2)
-            {
-                //magic string : string ifadelerin ayrı ayrı yazılması
-                return new ErrorResult(Messages.ProductNameInvalid);
-            }
+            //Business code
+            //Validation
+
+            //Aşağıdaki kod Validation yapıldığında yazacağımız standart kodumuz
+
+            //ValidationContext generic olarak verilmiş
+            //Aşağıdaki bir doğrulama context i, product için bir generic
+            //Aşağıdaki satırda Product için doğrulama yapıyorum diyoruz ve çalışacağımız tipte parametreden gelen product tır diyoruz
+            //var context = new ValidationContext<Product>(product);
+            //Aşağıdaki iki satır --> ProductValidator u kullanarak yani içindeki kuralları kullanarak ilgili context i yani product u doğrula demek 
+            //ProductValidator productValidator = new ProductValidator();
+            //var result = productValidator.Validate(context);
+            //Aşağıda sonuç IsValid(Geçerli) !(değilse)
+            //if (!result.IsValid)
+            //{
+            //    //Hata fırlat
+            //    throw new ValidationException(result.Errors);
+            //}
+            ////ValidationTool.Validate(new ProductValidator(), product);
+
             _productDal.Add(product);
             return new SuccessResult(Messages.ProductAdded);
         }
